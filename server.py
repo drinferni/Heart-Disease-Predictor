@@ -20,12 +20,10 @@ app = Flask(__name__)
 CORS(app)
 
 
-# Route to receive data from Vue.js frontend
+
 @app.route('/data', methods=['POST'])
 def receive_data():
-    data = request.json  # Assuming data is sent as JSON
-
-    # Process data using your model
+    data = request.json  
     result = data
     print(data["key"])
     
@@ -42,8 +40,8 @@ def receive_data():
     result  = data
     print(result)
 
-    #Return result as JSON response
+
     return jsonify(result), 200
 
 if __name__ == '__main__':
-    app.run(debug=True)  # Run Flask app in debug mode for development
+    app.run(debug=True)  
