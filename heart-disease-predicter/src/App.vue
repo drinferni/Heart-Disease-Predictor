@@ -1,6 +1,6 @@
 <template>
 
-<div>
+<div v-if="result == -1">
 
   <div>
   <label>Enter Your Age</label>
@@ -10,8 +10,10 @@
 
   <div>
     Gender
-    <input type="radio" value="1" v-model="gender" >
-    <input type="radio" value="0" v-model="gender">
+    <label>Male</label>
+    <input type="radio" value="1" label="male" v-model="gender" >
+    <label>Female</label>
+    <input type="radio" value="0" label="female" v-model="gender">
   </div>
 
   <div>
@@ -21,7 +23,7 @@
 
   <div>
     <div >
-        Are you a smoker
+        Have you ever smoke?
         <input type="checkbox" value="1" v-model="ever_smoked" >
     </div>
     <div v-if="ever_smoked">
@@ -34,7 +36,7 @@
   
   <div>
     <div>
-      Do you drink alcohol
+      Did you ever consume alcohol?
     <input type="checkbox" value="true" v-model="drinker" >
   </div>
 
@@ -82,6 +84,12 @@
 
 </div>
 
+<div v-if="result!=-1">
+    {{ result_to_display }}
+</div>
+
+<button @click="resubmit">SUBMIT ANOTHER?</button>
+
 </template>
 
 <script>
@@ -105,7 +113,9 @@ export default {
         Diabetes:0,
         Obesity:0,
         Stress_Level:0,
-        Exercise_Induced_Angina:0
+        Exercise_Induced_Angina:0,
+        result:-1,
+        result_to_display:"",
       }
   },
   methods :{ 
@@ -113,6 +123,33 @@ export default {
     predict () {
       if (this.drinker) this.Non_drinker = 0
       else this.Non_drinker = 1
+
+      if (this.gender == '1') this.gender = 1;
+      else this.gender = 0;
+
+      if (this.Diabetes == '1') this.Diabetes = 1;
+      else this.Diabetes = 0;
+
+      if (this.Obesity == '1') this.Obesity = 1;
+      else this.Obesity = 0;
+
+      if (this.Family_History == '1') this.Family_History = 1;
+      else this.Family_History = 0;
+      
+      if (this.Exercise_Induced_Angina == '1') this.Exercise_Induced_Angina = 1;
+      else this.Exercise_Induced_Angina = 0;
+
+      if (this.ever_smoked == true) this.ever_smoked = 1;
+      else this.ever_smoked = 0;
+
+      if (this.is_smoking == true) this.is_smoking = 1;
+      else this.is_smoking = 0;
+
+      if (this.Non_drinker == true) this.Non_drinker = 1;
+      else this.Non_drinker = 0;
+
+      if (this.Heavy_drinker == true) this.Heavy_drinker = 1;
+      else this.Heavy_drinker = 0;
 
 
       let data = [];
@@ -133,20 +170,20 @@ export default {
 
       console.log(data)
       
-      axios.post('http://127.0.0.1:5000/data', {
-  key: data
-})
-.then(response => {
-  console.log('Response:', response.data);
-  // Handle success scenario here
-})
-.catch(error => {
-  console.error('Error:', error);
-  // Handle error scenario here
-});
+      axios.post('http://127.0.0.1:5000/data', {key: data}).then(response => {
+        this.result = response.data["key"][0]
+        console.log(this.result , "meow")
+        if (this.result == 1) this.result_to_display = "YOU ARE AT HIGH RISK OF HEART DISEASE"
+        else this.result_to_display = "YOU ARE SAFE"
+        console.log('Response:', response.data)
+      }).catch(error => {
+        console.error('Error:', error)
+      });
 
-      
-
+    },
+    resubmit () {
+      this.result = -1
+      window.location.reload()
     }
 
   },

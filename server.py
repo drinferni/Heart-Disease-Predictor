@@ -1,5 +1,6 @@
 import pickle
 from flask import Flask, request, jsonify
+import numpy as np
 
 from flask_cors import CORS  # Import CORS from flask_cors module
 
@@ -12,6 +13,9 @@ with open('model.pkl', 'rb') as f:
 
 
 app = Flask(__name__)
+
+
+
 
 CORS(app)
 
@@ -27,9 +31,21 @@ def receive_data():
 
     # Process data using your model
     result = data
-    print(data)
-
+    print(data["key"])
     
+    data2d = []
+    data2d.append(data["key"])
+    data2d =np.array(data2d)
+    predicted = model.predict(data2d)
+    print(predicted)
+    
+    respose = predicted.tolist()
+
+    data["key"] = respose
+
+    result  = data
+    print(result)
+
     #Return result as JSON response
     return jsonify(result), 200
 
