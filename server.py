@@ -19,10 +19,6 @@ app = Flask(__name__)
 
 CORS(app)
 
-# Dummy function to process data using a model (replace with your actual model logic)
-def process_data(data):
-    # Example: Simply return a dictionary with processed data
-    return {"result": data["input"] * 2}  # Example processing: doubling the input
 
 # Route to receive data from Vue.js frontend
 @app.route('/data', methods=['POST'])
